@@ -1,18 +1,19 @@
 import "./App.scss";
 import React, { useState } from "react";
 import axios from "axios";
+import Loader from "react-loader-spinner";
 
 const App = () => {
   const [productName, setProductName] = useState("");
   const [keywords, setKeywords] = useState("");
 
-  const [disableButton, setDisableButton] = useState(false);
-  const [review, setReview] = useState("");
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [review, setReview] = useState(null);
 
   const handleLogin = (event) => {
     event.preventDefault();
     if (productName !== "" && keywords !== "") {
-      setDisableButton(true);
+      setShowSpinner(true);
       const headers = {
         "Content-Type": "application/json",
       };
@@ -26,6 +27,7 @@ const App = () => {
         .then((reviewResponse) => {
           setReview(reviewResponse.data.choices[0].text);
           navigator.clipboard.writeText('review');
+          setShowSpinner(false)
         });
     } else {
       return;
@@ -42,6 +44,13 @@ const App = () => {
 
   return (
     <div className="container">
+     {showSpinner && <Loader
+        type="Rings"
+        color="#00BFFF"
+        height={100}
+        width={100}
+        className="spinner"
+      />}
       <form className="review-form">
         <h2>Write a product review with just few words</h2>
         <input
@@ -63,9 +72,9 @@ const App = () => {
           Get Review
         </button>
       </form>
-      <div className="review-contaier">
+      {review && <div className="review-contaier">
         <p>{review}</p>
-      </div>
+      </div>}
     </div>
   );
 };

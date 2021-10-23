@@ -7,6 +7,7 @@
     justify-content: center;
     width: calc(100vw - 52px);
     height: calc(100vh - 52px);
+    position: relative;
     .review-form {
         display: flex;
         flex-direction: column;
@@ -30,8 +31,16 @@
     }
 
     .review-contaier {
+        padding: 12px;
         margin-top: 32px;
         background-color: #d8e2dc;
+    }
+
+    .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 
