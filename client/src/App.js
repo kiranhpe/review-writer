@@ -1,29 +1,35 @@
-import logo from "./logo.svg";
-import "./App.css";
-import React, { useEffect, useState } from "react";
+import "./App.scss";
+import React, { useState } from "react";
 import axios from "axios";
 
 const App = () => {
   const [productName, setProductName] = useState("");
   const [keywords, setKeywords] = useState("");
 
+  const [disableButton, setDisableButton] = useState(false);
   const [review, setReview] = useState("");
 
   const handleLogin = (event) => {
     event.preventDefault();
-    console.log(productName, keywords);
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    if (productName !== "" && keywords !== "") {
+      setDisableButton(true);
+      const headers = {
+        "Content-Type": "application/json",
+      };
 
-    const payload = {
-      productName: productName,
-      keywords: keywords,
+      const payload = {
+        productName: productName,
+        keywords: keywords,
+      };
+      axios
+        .post("/review", payload, { headers: headers })
+        .then((reviewResponse) => {
+          setReview(reviewResponse.data.choices[0].text);
+          navigator.clipboard.writeText('review');
+        });
+    } else {
+      return;
     }
-    axios.post("/review", payload, {headers: headers}).then(reviewResponse => {
-      console.log(reviewResponse.data);
-      setReview(reviewResponse.data.choices[0].text)
-    })
   };
 
   const handleProductChange = (e) => {
@@ -35,12 +41,13 @@ const App = () => {
   };
 
   return (
-    <div>
-      <form>
+    <div className="container">
+      <form className="review-form">
+        <h2>Write a product review with just few words</h2>
         <input
           type="text"
           name="product_name"
-          placeholder="product name"
+          placeholder="Product name"
           value={productName}
           onChange={handleProductChange}
         />
@@ -48,15 +55,17 @@ const App = () => {
         <input
           type="text"
           name="keywords"
-          placeholder="keywords name"
+          placeholder="Keywords"
           value={keywords}
           onChange={handleKeywords}
         />
         <button type="button" onClick={handleLogin}>
-          Login
+          Get Review
         </button>
       </form>
-      <p>{review}</p>
+      <div className="review-contaier">
+        <p>{review}</p>
+      </div>
     </div>
   );
 };
