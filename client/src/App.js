@@ -83,14 +83,14 @@ const App = () => {
         </button>
       </form>
 
-      <div className="review-contaier">
+      {(review || isMaxLimitReached ) && <div className="review-contaier">
         {review && <p className="review">{review}</p>}
         {isMaxLimitReached && (
           <p className="review-error">
             Your maximum request limit has been reached
           </p>
         )}
-      </div>
+      </div>}
     </div>
   );
 };
