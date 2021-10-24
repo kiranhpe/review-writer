@@ -1,5 +1,6 @@
 const { default: axios } = require("axios");
 var express = require("express");
+const Review = require("../models/review.schema");
 var router = express.Router();
 router.post("/", async (req, res) => {
   const productName = req.body.productName;
@@ -24,6 +25,13 @@ router.post("/", async (req, res) => {
       headers: headers,
     }
   );
+
+  const newReview = new Review({
+    productName: productName,
+    keywords: keywords,
+    review: response.data.choices[0].text.trim()
+  });
+  await newReview.save();
 
   res.send(response.data);
 });
