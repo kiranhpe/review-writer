@@ -5,6 +5,7 @@ const reviewSchema = new Schema({
   productName: String, // String is shorthand for {type: String}
   keywords: String,
   review: String,
+  ipAddress: String,
   date: { type: Date, default: Date.now },
 });
 

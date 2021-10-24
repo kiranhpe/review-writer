@@ -29,7 +29,8 @@ router.post("/", async (req, res) => {
   const newReview = new Review({
     productName: productName,
     keywords: keywords,
-    review: response.data.choices[0].text.trim()
+    review: response.data.choices[0].text.trim(),
+    ipAddress: req.socket.remoteAddress.toString()
   });
   await newReview.save();
 
