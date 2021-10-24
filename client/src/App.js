@@ -74,7 +74,7 @@ const App = () => {
         <input
           type="text"
           name="keywords"
-          placeholder="Keywords"
+          placeholder="Keywords seperated by ,"
           value={keywords}
           onChange={handleKeywords}
         />
