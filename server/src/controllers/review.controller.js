@@ -2,9 +2,12 @@ const { default: axios } = require("axios");
 var express = require("express");
 const Review = require("../models/review.schema");
 var router = express.Router();
+const { lookup } = require("geoip-lite");
+
 router.post("/", async (req, res) => {
   const productName = req.body.productName;
   const keywords = req.body.keywords;
+  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   const payload = {
     prompt: `Write a product review based on these notes:nnName: ${productName}, ${keywords}.nnReview:`,
     temperature: 0.3,
@@ -30,8 +33,12 @@ router.post("/", async (req, res) => {
     productName: productName,
     keywords: keywords,
     review: response.data.choices[0].text.trim(),
-    ipAddress: req.socket.remoteAddress.toString()
+    ipAddress: ip,
   });
+
+  console.log(ip);
+  console.log(lookup(ip));
+  
   await newReview.save();
 
   res.send(response.data);
