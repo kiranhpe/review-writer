@@ -50,10 +50,6 @@ export const Home = (props) => {
     setKeywords(e.target.value);
   };
 
-  const handleAdminButton = () => {
-      props.history.push('/admin')
-  }
-
   return (
     <div className="container">
       {showSpinner && (
@@ -85,7 +81,7 @@ export const Home = (props) => {
         <button type="button" onClick={handleLogin}>
           Get Review
         </button>
-        <button type="button" component={Link} to="/admin" onClick={handleAdminButton}>
+        <button type="button" onClick={()=> {props.history.push('/admin')}}>
           Login as Admin
         </button>
       </form>

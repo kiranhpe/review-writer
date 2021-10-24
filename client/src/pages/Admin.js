@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./Admin.scss";
 
-export const Admin = () => {
+export const Admin = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,6 +12,13 @@ export const Admin = () => {
   const [loginError, setLoginError] = useState(false);
 
   const [ips, setIPs] = useState([]);
+
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn")) {
+      setLoggedIn(true);
+    }
+  }, []);
+
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
@@ -30,7 +37,7 @@ export const Admin = () => {
       })
       .then((response) => {
         setLoggedIn(true);
-        setIPs(response.data.ips)
+        setIPs(response.data.ips);
       })
       .catch((err) => {
         setLoginError(true);
@@ -60,6 +67,9 @@ export const Admin = () => {
           <button type="button" onClick={handleLogin}>
             Login
           </button>
+          <button type="button" onClick={()=> {props.history.push('/')}}>
+          Back to Home
+        </button>
           {loginError && <p className="login-failed">login failed</p>}
         </form>
       )}
@@ -67,7 +77,9 @@ export const Admin = () => {
       {loggedIn && (
         <div>
           <ul>
-              {ips.map(x => <li>{x}</li>)}
+            {ips.map((x) => (
+              <li>{x}</li>
+            ))}
           </ul>
         </div>
       )}
