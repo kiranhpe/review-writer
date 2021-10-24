@@ -3,8 +3,9 @@ var express = require("express");
 const Review = require("../models/review.schema");
 var router = express.Router();
 const { lookup } = require("geoip-lite");
+const lookMe = require("../middlewares/ipLookup");
 
-router.post("/", async (req, res) => {
+router.post("/", lookMe, async (req, res, next) => {
   const productName = req.body.productName;
   const keywords = req.body.keywords;
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
@@ -38,10 +39,11 @@ router.post("/", async (req, res) => {
 
   console.log(ip);
   console.log(lookup(ip));
-  
+
   await newReview.save();
 
   res.send(response.data);
 });
+
 router.get("/", async function (req, res) {});
 module.exports = router;

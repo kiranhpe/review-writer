@@ -10,6 +10,8 @@ const App = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [review, setReview] = useState(null);
 
+  const [isMaxLimitReached, setIsMaxLitmitReached] = useState(false);
+
   const handleLogin = (event) => {
     event.preventDefault();
     if (productName !== "" && keywords !== "") {
@@ -26,8 +28,14 @@ const App = () => {
         .post("/review", payload, { headers: headers })
         .then((reviewResponse) => {
           setReview(reviewResponse.data.choices[0].text);
-          navigator.clipboard.writeText('review');
-          setShowSpinner(false)
+          navigator.clipboard.writeText("review");
+          setShowSpinner(false);
+        })
+        .catch((reason) => {
+          if (reason.response.status === 403) {
+            setIsMaxLitmitReached(true);
+            setShowSpinner(false);
+          }
         });
     } else {
       return;
@@ -44,13 +52,15 @@ const App = () => {
 
   return (
     <div className="container">
-     {showSpinner && <Loader
-        type="Rings"
-        color="#00BFFF"
-        height={100}
-        width={100}
-        className="spinner"
-      />}
+      {showSpinner && (
+        <Loader
+          type="Rings"
+          color="#00BFFF"
+          height={100}
+          width={100}
+          className="spinner"
+        />
+      )}
       <form className="review-form">
         <h2>Write a product review with just few words</h2>
         <input
@@ -72,9 +82,15 @@ const App = () => {
           Get Review
         </button>
       </form>
-      {review && <div className="review-contaier">
-        <p>{review}</p>
-      </div>}
+
+      <div className="review-contaier">
+        {review && <p className="review">{review}</p>}
+        {isMaxLimitReached && (
+          <p className="review-error">
+            Your maximum request limit has been reached
+          </p>
+        )}
+      </div>
     </div>
   );
 };
