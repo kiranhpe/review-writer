@@ -6,7 +6,7 @@ const lookMe = async (req, res, next) => {
     const requestCount = await (await Review.find({ ipAddress: ip })).length;
     console.log(requestCount);
   
-    if (requestCount < 11) {
+    if (requestCount < +process.env.MAX_REQUEST_COUNT) {
       next();
     } else {
       res.status(403).send('Maximum request reached');

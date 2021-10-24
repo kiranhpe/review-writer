@@ -1,11 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const path = require("path");
-
-const Review = require("./src/models/review.schema");
-const PORT = process.env.PORT || 3001;
+const reviewRoutes = require("./src/controllers/review.controller");
+const adminRoutes = require("./src/controllers/admin.controller");
+const connectToDB = require("./src/db/connetion");
 
 const app = express();
+
 app.use(express.json());
 
 require("dotenv").config();
@@ -18,21 +18,22 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server! Baby" + IP });
 });
 
-var reviewRoutes = require("./src/controllers/review.controller");
+
 app.use("/review", reviewRoutes);
+app.use("/admin", adminRoutes)
 
 // All other GET requests not handled before will return our React app
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
 });
 
-const connectToDB = async () => {
-  await mongoose.connect(process.env.DB);
-};
 
 connectToDB().then(() => {
   console.log("connected to DB");
 });
+
+const PORT = process.env.PORT || 3001;
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
